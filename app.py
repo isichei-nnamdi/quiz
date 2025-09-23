@@ -14,11 +14,11 @@ c = conn.cursor()
 
 # store responses
 c.execute("""
-CREATE TABLE IF NOT EXISTS responses (
-    question_id TEXT,
-    nickname TEXT,
-    answer TEXT,
-    PRIMARY KEY (question_id, nickname)
+CREATE TABLE IF NOT EXISTS questions (
+    question_id TEXT PRIMARY KEY,
+    question_text TEXT,
+    start_time REAL,
+    duration INTEGER
 )
 """)
 
