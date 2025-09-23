@@ -82,10 +82,16 @@ def audience_mode(question_id):
 
 # ---------- MAIN APP ----------
 params = st.query_params
-mode = params.get("mode", ["host"])[0]
+
+mode = params.get("mode", "host")   # returns a string
+qid = params.get("question_id", "Q1")
 
 if mode == "host":
     host_mode()
 elif mode == "audience":
-    qid = params.get("question_id", ["Q1"])[0]
-    audience_mode(qid)
+    if qid:
+        audience_mode(qid)
+    else:
+        st.error("❌ No question selected. Please scan a valid QR code.")
+else:
+    st.warning("Please choose a mode: host or audience.")
