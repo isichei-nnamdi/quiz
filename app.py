@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS responses (
     answer TEXT,
     start_time REAL,
     expiry_time REAL,
+    submitted_time REAL,
     PRIMARY KEY (question_id, nickname)
 )
 """)
@@ -70,13 +71,39 @@ def host_mode():
 
     st.markdown("---")
     st.subheader("📊 Live Results")
+    # if st.button("👀 Show Results"):
+    #     df = pd.read_sql(f"SELECT nickname, answer FROM responses WHERE question_id='{question_id}'", conn)
+    #     if not df.empty:
+    #         chart = alt.Chart(df).mark_bar().encode(
+    #             x=alt.X('answer:N', title="Answers"),
+    #             y=alt.Y('count():Q', title="Number of Responses"),
+    #             color=alt.Color('nickname:N', legend=alt.Legend(title="Participants"))
+    #         ).properties(
+    #             title="Live Audience Responses",
+    #             width=600,
+    #             height=400
+    #         )
+    #         st.altair_chart(chart, use_container_width=True)
+    #     else:
+    #         st.info("⏳ Waiting for audience responses...")
     if st.button("👀 Show Results"):
-        df = pd.read_sql(f"SELECT nickname, answer FROM responses WHERE question_id='{question_id}'", conn)
+        df = pd.read_sql(f"""
+            SELECT nickname, answer, start_time, submitted_time 
+            FROM responses 
+            WHERE question_id='{question_id}'
+        """, conn)
+
         if not df.empty:
+            # compute duration in seconds
+            df["duration"] = (df["submitted_time"] - df["start_time"]).round().astype("Int64")
+
+            # nickname label with duration
+            df["nickname_label"] = df["nickname"] + " (" + df["duration"].astype(str) + "s)"
+
             chart = alt.Chart(df).mark_bar().encode(
                 x=alt.X('answer:N', title="Answers"),
                 y=alt.Y('count():Q', title="Number of Responses"),
-                color=alt.Color('nickname:N', legend=alt.Legend(title="Participants"))
+                color=alt.Color('nickname_label:N', legend=alt.Legend(title="Participants (time taken)"))
             ).properties(
                 title="Live Audience Responses",
                 width=600,
@@ -85,6 +112,7 @@ def host_mode():
             st.altair_chart(chart, use_container_width=True)
         else:
             st.info("⏳ Waiting for audience responses...")
+
 
 # ---------- AUDIENCE MODE ----------
 def audience_mode(question_id):
@@ -168,9 +196,10 @@ def audience_mode(question_id):
             return
 
         # Save response
+        now = time.time()
         c.execute(
-            "UPDATE responses SET answer=? WHERE question_id=? AND nickname=?",
-            (answer_input, question_id, nickname)
+            "UPDATE responses SET answer=?, submitted_time=? WHERE question_id=? AND nickname=?",
+            (answer_input, now, question_id, nickname)
         )
         conn.commit()
         st.balloons()
