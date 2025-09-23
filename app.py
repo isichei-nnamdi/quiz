@@ -16,18 +16,45 @@ c.execute("""CREATE TABLE IF NOT EXISTS responses (
             )""")
 conn.commit()
 
-# ---------- HOST MODE ----------
+# # ---------- HOST MODE ----------
+# def host_mode():
+#     st.header("📊 Host Dashboard")
+#     question = st.text_input("Enter your question:")
+#     question_id = st.text_input("Question ID (unique):", "Q1")
+
+#     if st.button("Generate QR Code"):
+#         link = f"http://localhost:8501/?mode=audience&question_id={question_id}"
+#         qr = qrcode.make(link)
+#         buf = io.BytesIO()
+#         qr.save(buf, format="PNG")
+#         st.image(Image.open(buf), caption="Scan to Join")
+
+#     # Display responses
+#     if st.button("Show Results"):
+#         df = pd.read_sql(f"SELECT answer FROM responses WHERE question_id='{question_id}'", conn)
+#         if not df.empty:
+#             chart = alt.Chart(df).mark_bar().encode(
+#                 x='answer',
+#                 y='count()'
+#             )
+#             st.altair_chart(chart, use_container_width=True)
+#         else:
+#             st.info("No responses yet.")
+
 def host_mode():
     st.header("📊 Host Dashboard")
     question = st.text_input("Enter your question:")
     question_id = st.text_input("Question ID (unique):", "Q1")
 
+    # Let the host specify their Streamlit Cloud URL
+    base_url = st.text_input("Enter your app base URL:", "https://quizitup.streamlit.app/")
+
     if st.button("Generate QR Code"):
-        link = f"http://localhost:8501/?mode=audience&question_id={question_id}"
+        link = f"{base_url}/?mode=audience&question_id={question_id}"
         qr = qrcode.make(link)
         buf = io.BytesIO()
         qr.save(buf, format="PNG")
-        st.image(Image.open(buf), caption="Scan to Join")
+        st.image(Image.open(buf), caption=f"Scan to Join\n{link}")
 
     # Display responses
     if st.button("Show Results"):
@@ -40,6 +67,7 @@ def host_mode():
             st.altair_chart(chart, use_container_width=True)
         else:
             st.info("No responses yet.")
+
 
 # ---------- AUDIENCE MODE ----------
 def audience_mode(question_id):
