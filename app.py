@@ -42,10 +42,13 @@ def host_mode():
     st.markdown("<p style='text-align:center; font-size:18px;'>Manage your questions and see live audience responses</p>", unsafe_allow_html=True)
 
     with st.container():
-        st.subheader("📝 Create Question")
+        # st.subheader("📝 Create Question")
         question = st.text_input("📝 Enter your question:")
-        question_id = st.text_input("🆔 Question ID (unique):", "Q1")
-        duration = st.number_input("⏳ Set timer (seconds):", min_value=10, max_value=300, value=30, step=5)
+        q1, q2 = st.columns(2)
+        with q1:
+            question_id = st.text_input("🆔 Question ID (unique):", "Q1")
+        with q2:
+            duration = st.number_input("⏳ Set timer (seconds):", min_value=10, max_value=300, value=30, step=5)
 
         if st.button("💾 Save & Start Question"):
             c.execute("REPLACE INTO questions VALUES (?, ?, ?)", (question_id, question, duration))
@@ -84,114 +87,6 @@ def host_mode():
             st.info("⏳ Waiting for audience responses...")
 
 # ---------- AUDIENCE MODE ----------
-# def audience_mode(question_id):
-#     st.markdown("<h1 style='text-align:center; color:#1E90FF;'>🙋 Join the Game!</h1>", unsafe_allow_html=True)
-
-#     # Fetch question with timer
-#     c.execute("SELECT question_text, start_time, duration FROM questions WHERE question_id=?", (question_id,))
-#     row = c.fetchone()
-
-#     if not row:
-#         st.error("❌ Question not found. Please wait for the host to start.")
-#         return
-
-#     question_text, start_time, duration = row
-#     st.markdown(f"<h2 style='text-align:center; color:#333;'>❓ {question_text}</h2>", unsafe_allow_html=True)
-
-#     # Timer logic
-#     remaining = int((start_time + duration) - time.time())
-#     if remaining <= 0:
-#         st.error("⏳ Time’s up! You can’t answer this question anymore.")
-#         return
-#     else:
-#         st.info(f"⏱ You have {remaining} seconds left!")
-
-#     nickname = st.text_input("🎭 Enter your unique nickname:")
-
-#     # Check if already answered
-#     if nickname:
-#         c.execute("SELECT * FROM responses WHERE question_id=? AND nickname=?", (question_id, nickname))
-#         existing = c.fetchone()
-#         if existing:
-#             st.warning("⚠️ You have already answered this question.")
-#             return
-
-#     answer = st.text_input("💡 Your answer:")
-
-#     if st.button("🚀 Submit Answer", use_container_width=True):
-#         if nickname and answer:
-#             try:
-#                 c.execute("INSERT INTO responses VALUES (?, ?, ?)", (question_id, nickname, answer))
-#                 conn.commit()
-#                 st.balloons()
-#                 st.success("🎉 Response submitted! Waiting for the next question...")
-#             except sqlite3.IntegrityError:
-#                 st.error("❌ Nickname already used for this question.")
-#         else:
-#             st.warning("⚠️ Please enter both nickname and answer before submitting.")
-
-
-
-# def audience_mode(question_id):
-#     st.markdown("<h1 style='text-align:center; color:#1E90FF;'>🙋 Join the Game!</h1>", unsafe_allow_html=True)
-
-#     # Fetch question and duration
-#     c.execute("SELECT question_text, duration FROM questions WHERE question_id=?", (question_id,))
-#     row = c.fetchone()
-
-#     if not row:
-#         st.error("❌ Question not found. Please wait for the host to start.")
-#         return
-
-#     question_text, duration = row
-#     st.markdown(f"<h2 style='text-align:center; color:#333;'>❓ {question_text}</h2>", unsafe_allow_html=True)
-
-#     nickname = st.text_input("🎭 Enter your unique nickname:")
-
-#     if nickname:
-#         # Check if already exists
-#         c.execute("SELECT answer, start_time, expiry_time FROM responses WHERE question_id=? AND nickname=?",
-#                   (question_id, nickname))
-#         existing = c.fetchone()
-
-#         if existing:
-#             answer, start_time, expiry_time = existing
-#             if answer:
-#                 st.warning("⚠️ You have already answered this question.")
-#                 return
-#         else:
-#             # First join → set start & expiry time
-#             start_time = time.time()
-#             expiry_time = start_time + duration
-#             c.execute("INSERT INTO responses (question_id, nickname, answer, start_time, expiry_time) VALUES (?, ?, ?, ?, ?)",
-#                       (question_id, nickname, None, start_time, expiry_time))
-#             conn.commit()
-
-#         # Countdown
-#         remaining = int(expiry_time - time.time())
-#         if remaining <= 0:
-#             st.error("⏳ Time’s up! You can’t answer this question anymore.")
-#             return
-#         else:
-#             st.info(f"⏱ You have {remaining} seconds left!")
-
-#         # Answer box
-#         answer = st.text_input("💡 Your answer:")
-
-#         if st.button("🚀 Submit Answer", use_container_width=True):
-#             if answer:
-#                 now = time.time()
-#                 if now <= expiry_time:
-#                     c.execute("UPDATE responses SET answer=? WHERE question_id=? AND nickname=?",
-#                               (answer, question_id, nickname))
-#                     conn.commit()
-#                     st.balloons()
-#                     st.success("🎉 Response submitted! Waiting for the next question...")
-#                 else:
-#                     st.error("❌ Time’s up! You can’t answer anymore.")
-#             else:
-#                 st.warning("⚠️ Please enter your answer before submitting.")
-
 def audience_mode(question_id):
     st.markdown("<h1 style='text-align:center; color:#1E90FF;'>🙋 Join the Game!</h1>", unsafe_allow_html=True)
 
