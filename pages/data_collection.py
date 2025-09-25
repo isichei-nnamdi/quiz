@@ -29,7 +29,7 @@ def host_mode():
     st.write("Manage live data collection and demonstrate Linear Regression with your audience's data.")
 
     st.subheader("📲 Share with Audience")
-    base_url = st.text_input("Enter your app base URL:", "https://quizitup.streamlit.app/")
+    base_url = st.text_input("Enter your app base URL:", "https://quizitup.streamlit.app/data_collection")
     page_name = "LiveAudienceData"
 
     if st.button("🔗 Generate QR Code"):
