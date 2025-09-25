@@ -112,7 +112,8 @@ def host_mode():
                 # Plot
                 fig, ax = plt.subplots()
                 ax.scatter(X, y, color="blue", label="Audience Data")
-                ax.plot(x_line, y_line, color="red", label=f"y={m:.2f}x+{c_:.2f}")
+                ax.plot(x_line)
+                # ax.plot(x_line, y_line, color="red", label=f"y={m:.2f}x+{c_:.2f}")
                 ax.set_xlabel("X Value (e.g., Sleep Hours)")
                 ax.set_ylabel("Y Value (e.g., Energy Level)")
                 ax.set_title("Live Linear Regression from Audience Data")
