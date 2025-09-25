@@ -97,7 +97,7 @@ def host_mode():
         df = pd.read_sql("SELECT * FROM audience_responses", conn)
 
         if not df.empty:
-            st.write(df)
+            st.write(df.head(5))
 
             if len(df) > 1:
                 # Regression fit
