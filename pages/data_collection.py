@@ -24,56 +24,6 @@ CREATE TABLE IF NOT EXISTS audience_responses (
 conn.commit()
 
 # ---------- HOST MODE ----------
-# def host_mode():
-#     st.markdown("<h1 style='text-align:center; color:#FF4B4B;'>📊 Live Audience Data Collection (Host)</h1>", unsafe_allow_html=True)
-#     st.write("Manage live data collection and demonstrate Linear Regression with your audience's data.")
-
-#     st.subheader("📲 Share with Audience")
-#     base_url = st.text_input("Enter your app base URL:", "https://quizitup.streamlit.app")
-#     page_name = "data_collection"
-
-#     if st.button("🔗 Generate QR Code"):
-#         link = f"{base_url}/{page_name}?mode=audience"
-#         qr = qrcode.make(link)
-#         buf = io.BytesIO()
-#         qr.save(buf, format="PNG")
-#         st.image(Image.open(buf), caption=f"Scan to Join 🎉\n{link}")
-
-
-#     st.markdown("---")
-#     st.subheader("📈 Live Collected Data")
-
-#     df = pd.read_sql("SELECT * FROM audience_responses", conn)
-
-#     if not df.empty:
-#         st.write(df)
-
-#         if len(df) > 1:
-#             # Regression fit
-#             X = df["x_value"].values
-#             y = df["y_value"].values
-
-#             m, c_ = np.polyfit(X, y, 1)
-
-#             x_line = np.linspace(min(X), max(X), 100)
-#             y_line = m * x_line + c_
-
-#             # Plot
-#             fig, ax = plt.subplots()
-#             ax.scatter(X, y, color="blue", label="Audience Data")
-#             ax.plot(x_line, y_line, color="red", label=f"y={m:.2f}x+{c_:.2f}")
-#             ax.set_xlabel("X Value (e.g., Sleep Hours)")
-#             ax.set_ylabel("Y Value (e.g., Energy Level)")
-#             ax.set_title("Live Linear Regression from Audience Data")
-#             ax.legend()
-#             st.pyplot(fig)
-
-#             st.markdown(f"**Equation of best-fit line:**  `y = {m:.2f}x + {c_:.2f}`")
-#         else:
-#             st.info("Need at least 2 responses to fit a regression line.")
-#     else:
-#         st.info("⏳ Waiting for audience responses...")
-# ---------- HOST MODE ----------
 def host_mode():
     st.markdown("<h1 style='text-align:center; color:#FF4B4B;'>📊 Live Audience Data Collection (Host)</h1>", unsafe_allow_html=True)
     st.write("Manage live data collection and demonstrate Linear Regression with your audience's data.")
@@ -147,8 +97,11 @@ def audience_mode():
         return
 
     # Two numeric values (example: Sleep vs Energy)
-    x_val = st.number_input("How many hours do you usually sleep per night?", min_value=0, max_value=12, step=1)
-    y_val = st.slider("How much energy do you feel during the day? (0–100)", min_value=0, max_value=100, step=1)
+    q1, q2 = st.columns(2)
+    with q1:
+        x_val = st.number_input("How many hours do you usually sleep per night?", min_value=0, max_value=12, step=1)
+    with q2:
+        y_val = st.slider("How much energy do you feel during the day? (0–100)", min_value=0, max_value=100, step=1)
 
     if st.button("🚀 Submit Response"):
         now = time.time()
