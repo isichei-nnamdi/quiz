@@ -71,21 +71,6 @@ def host_mode():
 
     st.markdown("---")
     st.subheader("📊 Live Results")
-    # if st.button("👀 Show Results"):
-    #     df = pd.read_sql(f"SELECT nickname, answer FROM responses WHERE question_id='{question_id}'", conn)
-    #     if not df.empty:
-    #         chart = alt.Chart(df).mark_bar().encode(
-    #             x=alt.X('answer:N', title="Answers"),
-    #             y=alt.Y('count():Q', title="Number of Responses"),
-    #             color=alt.Color('nickname:N', legend=alt.Legend(title="Participants"))
-    #         ).properties(
-    #             title="Live Audience Responses",
-    #             width=600,
-    #             height=400
-    #         )
-    #         st.altair_chart(chart, use_container_width=True)
-    #     else:
-    #         st.info("⏳ Waiting for audience responses...")
     if st.button("👀 Show Results"):
         df = pd.read_sql(f"""
             SELECT nickname, answer, start_time, submitted_time 
