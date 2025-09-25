@@ -28,8 +28,18 @@ def host_mode():
     st.markdown("<h1 style='text-align:center; color:#FF4B4B;'>📊 Live Audience Data Collection (Host)</h1>", unsafe_allow_html=True)
     st.write("Manage live data collection and demonstrate Linear Regression with your audience's data.")
 
+    # st.subheader("📲 Share with Audience")
+    # base_url = st.text_input("Enter your app base URL:", "https://quizitup.streamlit.app/data_collection")
+    # page_name = "LiveAudienceData"
+
+    # if st.button("🔗 Generate QR Code"):
+    #     link = f"{base_url}/{page_name}?mode=audience"
+    #     qr = qrcode.make(link)
+    #     buf = io.BytesIO()
+    #     qr.save(buf, format="PNG")
+    #     st.image(Image.open(buf), caption=f"Scan to Join 🎉\n{link}")
     st.subheader("📲 Share with Audience")
-    base_url = st.text_input("Enter your app base URL:", "https://quizitup.streamlit.app/data_collection")
+    base_url = st.text_input("Enter your app base URL:", "https://quizitup.streamlit.app")
     page_name = "LiveAudienceData"
 
     if st.button("🔗 Generate QR Code"):
@@ -38,6 +48,7 @@ def host_mode():
         buf = io.BytesIO()
         qr.save(buf, format="PNG")
         st.image(Image.open(buf), caption=f"Scan to Join 🎉\n{link}")
+
 
     st.markdown("---")
     st.subheader("📈 Live Collected Data")
