@@ -24,6 +24,58 @@ CREATE TABLE IF NOT EXISTS audience_responses (
 conn.commit()
 
 # ---------- HOST MODE ----------
+# def host_mode():
+#     st.markdown("<h1 style='text-align:center; color:#FF4B4B;'>📊 Live Audience Data Collection (Host)</h1>", unsafe_allow_html=True)
+#     st.write("Manage live data collection and demonstrate Linear Regression with your audience's data.")
+
+#     st.subheader("📲 Share with Audience")
+#     base_url = st.text_input("Enter your app base URL:", "https://quizitup.streamlit.app")
+#     page_name = "data_collection"
+
+#     if st.button("🔗 Generate QR Code"):
+#         link = f"{base_url}/{page_name}?mode=audience"
+#         qr = qrcode.make(link)
+#         buf = io.BytesIO()
+#         qr.save(buf, format="PNG")
+#         st.image(Image.open(buf), caption=f"Scan to Join 🎉\n{link}")
+
+#     st.markdown("---")
+#     st.subheader("📈 Live Collected Data")
+
+#     # Add a button to fetch & show responses
+#     if st.button("👀 View Live Responses"):
+#         df = pd.read_sql("SELECT * FROM audience_responses", conn)
+
+#         if not df.empty:
+#             st.write(df.head(5))
+
+#             if len(df) > 1:
+#                 # Regression fit
+#                 X = df["Sleep_hours"].values
+#                 y = df["Energy_level"].values
+
+#                 m, c_ = np.polyfit(X, y, 1)
+
+#                 x_line = np.linspace(min(X), max(X), 100)
+#                 y_line = m * x_line + c_
+
+#                 # Plot
+#                 fig, ax = plt.subplots()
+#                 ax.scatter(X, y, color="blue", label="Audience Data")
+#                 # ax.plot(x_line, y_line, color="red", label=f"y={m:.2f}x+{c_:.2f}")
+#                 ax.set_xlabel("Sleep Hours")
+#                 ax.set_ylabel("Energy Level")
+#                 ax.set_title("Live Linear Regression from Audience Data")
+#                 ax.legend()
+#                 st.pyplot(fig)
+            
+
+#                 st.markdown(f"**Equation of best-fit line:**  `y = {m:.2f}x + {c_:.2f}`")
+#             else:
+#                 st.info("Need at least 2 responses to fit a regression line.")
+#         else:
+#             st.info("⏳ No audience responses yet. Waiting...")
+# ---------- HOST MODE ----------
 def host_mode():
     st.markdown("<h1 style='text-align:center; color:#FF4B4B;'>📊 Live Audience Data Collection (Host)</h1>", unsafe_allow_html=True)
     st.write("Manage live data collection and demonstrate Linear Regression with your audience's data.")
@@ -49,6 +101,15 @@ def host_mode():
         if not df.empty:
             st.write(df.head(5))
 
+            # 🔽 Add download button
+            csv = df.to_csv(index=False).encode("utf-8")
+            st.download_button(
+                label="💾 Download Full Dataset as CSV",
+                data=csv,
+                file_name="audience_responses.csv",
+                mime="text/csv"
+            )
+
             if len(df) > 1:
                 # Regression fit
                 X = df["Sleep_hours"].values
@@ -68,13 +129,13 @@ def host_mode():
                 ax.set_title("Live Linear Regression from Audience Data")
                 ax.legend()
                 st.pyplot(fig)
-            
 
-                st.markdown(f"**Equation of best-fit line:**  `y = {m:.2f}x + {c_:.2f}`")
+                # st.markdown(f"**Equation of best-fit line:**  `y = {m:.2f}x + {c_:.2f}`")
             else:
                 st.info("Need at least 2 responses to fit a regression line.")
         else:
             st.info("⏳ No audience responses yet. Waiting...")
+
 
 
 # ---------- AUDIENCE MODE ----------
