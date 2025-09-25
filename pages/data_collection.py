@@ -15,8 +15,8 @@ c = conn.cursor()
 c.execute("""
 CREATE TABLE IF NOT EXISTS audience_responses (
     nickname TEXT,
-    x_value REAL,
-    y_value REAL,
+    Sleep_hours REAL,
+    Energy_level REAL,
     submitted_time REAL,
     PRIMARY KEY (nickname)
 )
@@ -51,8 +51,8 @@ def host_mode():
 
             if len(df) > 1:
                 # Regression fit
-                X = df["x_value"].values
-                y = df["y_value"].values
+                X = df["Sleep_hours"].values
+                y = df["Energy_level"].values
 
                 m, c_ = np.polyfit(X, y, 1)
 
