@@ -40,7 +40,7 @@ def host_mode():
     #     st.image(Image.open(buf), caption=f"Scan to Join 🎉\n{link}")
     st.subheader("📲 Share with Audience")
     base_url = st.text_input("Enter your app base URL:", "https://quizitup.streamlit.app")
-    page_name = "LiveAudienceData"
+    page_name = "data_collection"
 
     if st.button("🔗 Generate QR Code"):
         link = f"{base_url}/{page_name}?mode=audience"
